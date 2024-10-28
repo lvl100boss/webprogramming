@@ -18,11 +18,18 @@ $(document).ready(function(){
         viewProducts()
     })
 
+    $('#account-link').on('click', function(e){
+        e.preventDefault()
+        viewAccount()
+    })
+
     let url = window.location.href;
     if (url.endsWith('dashboard')){
         $('#dashboard-link').trigger('click')
     }else if (url.endsWith('products')){
         $('#products-link').trigger('click')
+    }else if (url.endsWith('accounts')){
+        $('#account-link').trigger('click')
     }else{
         $('#dashboard-link').trigger('click')
     }
@@ -191,5 +198,55 @@ $(document).ready(function(){
                 });
             }
         });
+    }
+
+    function fetchrole(){
+        $.ajax({
+            url: '../account/fetch-role.php', // URL to the PHP script that returns the categories
+            type: 'GET',
+            dataType: 'json', // Expect JSON response
+            success: function(data) {
+                // Clear the existing options (if any) and add a default "Select" option
+                $('#role').empty().append('<option value="">--Select--</option>');
+                
+                // Iterate through the data (roles) and append each one to the select dropdown
+                $.each(data, function(index, role) {
+                    $('#role').append(
+                        $('<option>', {
+                            value: role.id, // The value attribute
+                            text: role.name // The displayed text
+                        })
+                    );
+                });
+            }
+        });
+    }
+
+    function viewAccount(){
+        $.ajax({
+            type: 'GET',
+            url: '../account/view-account.php',
+            dataType: 'html',
+            success: function(response){
+                $('.content-page').html(response)
+
+                var table = $('#table-account').DataTable({
+                    dom: 'rtp',
+                    pageLength: 10,
+                    ordering: false
+                })
+
+                  // Bind custom input to DataTable search
+                  $('#custom-search').on('keyup', function() {
+                    table.search(this.value).draw()
+                });
+
+                $('#role-filter').on('change', function() {
+                    if(this.value !== 'choose'){
+                        table.column(3).search(this.value).draw()
+                    }
+                });
+            }
+        })
     }
 });
