@@ -38,7 +38,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="viewAccounts" class="nav-link" id="account-link">
+            <a href="accounts" class="nav-link" id="account-link">
                 <i class="bi bi-people"></i>
                 <span class="fs-6 ms-2">Accounts</span>
             </a>
